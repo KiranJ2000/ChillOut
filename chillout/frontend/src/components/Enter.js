@@ -1,15 +1,53 @@
 import React from "react";
+import { useState } from "react";
 import { Grid, Button, Typography, TextField } from "@material-ui/core";
 
+import { useHistory } from "react-router-dom";
 import useStyles from "../styles/styles.js";
 
+import axios from "axios";
+
 function Enter() {
+  const [username, setUsername] = useState("");
+  const [isError, setError] = useState(false);
+  const [errorText, setErrorText] = useState("");
+
   const classes = useStyles();
+  const history = useHistory();
+
+  function onSubmitButton() {
+    if (!username || !username.trim()) {
+      setError(true);
+      setErrorText("Please enter a valid username!");
+      return;
+    }
+
+    const requestOptions = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        currentUsername: username,
+      }),
+    };
+    axios
+      .post(
+        "http://localhost:8000/api/set-username",
+        {
+          currentUsername: username,
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        console.log(res);
+        history.push("/home");
+      })
+      .catch((err) => console.log(err));
+  }
 
   return (
     <>
       <Grid container alignItems="center">
-        <Grid className={classes.heading} item spacing={4} align="center">
+        <Grid className={classes.heading} item align="center">
           <Grid item xs={12}>
             <Typography variant="h1" color="textPrimary">
               ChillOut
@@ -38,7 +76,13 @@ function Enter() {
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <TextField label="Username" variant="outlined" />
+          <TextField
+            label="Username"
+            variant="outlined"
+            onChange={(e) => setUsername(e.target.value)}
+            error={isError}
+            helperText={errorText}
+          />
         </Grid>
         <Grid item xs={12}>
           <Button
@@ -46,6 +90,7 @@ function Enter() {
             variant="contained"
             size="large"
             style={{ marginTop: "14px" }}
+            onClick={onSubmitButton}
           >
             Submit
           </Button>
