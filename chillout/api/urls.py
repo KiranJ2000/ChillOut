@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import index
+from .views import SetUsername, GetUsername
 
 urlpatterns = [
-    path('', index.as_view())
+    path('set-username', SetUsername.as_view()),
+    path('get-username', GetUsername.as_view()),
 ]
