@@ -1,0 +1,65 @@
+import React, { useState, useEffect } from "react";
+import { useParams, useHistory } from "react-router-dom";
+import axios from "axios";
+
+import { Grid, Typography, Button, CircularProgress } from "@material-ui/core";
+
+function Room(props) {
+  const [votesToSkip, setVotesToSkip] = useState(0);
+  const [isHost, setHost] = useState(false);
+
+  const history = useHistory();
+  const params = useParams();
+
+  useEffect(() => {
+    getRoomDetails();
+  }, []);
+
+  function getRoomDetails() {
+    axios
+      .get("http://localhost:8000/api/get-room" + "?code=" + params.roomCode, {
+        withCredentials: true,
+      })
+      .then(({ data }) => {
+        console.log(data);
+        setVotesToSkip(data.votes_to_skip);
+        data.is_host ? setHost("true") : setHost("false");
+      })
+      .catch((err) => {
+        console.log(err);
+        history.push("/home");
+      });
+  }
+
+  return (
+    <>
+      <Grid container align="center">
+        {votesToSkip && isHost ? (
+          <>
+            <Grid item xs={12} align="center">
+              <Typography variant="h4" color="initial">
+                Votes to skip : {votesToSkip}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} aligin="center">
+              <Typography variant="h4" color="initial">
+                Is Host : {isHost}
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h4" color="initial">
+                code : {params.roomCode}
+              </Typography>
+            </Grid>
+          </>
+        ) : (
+          <Grid item xs={12}>
+            <CircularProgress style={{ marginTop: "50vh" }} />
+          </Grid>
+        )}
+      </Grid>
+    </>
+  );
+}
+
+export default Room;
