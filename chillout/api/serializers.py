@@ -11,3 +11,4 @@ class CreateRoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = ['votes_to_skip']
+

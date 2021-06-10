@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import axios from "axios";
 
 import { Grid, Typography, Button, CircularProgress } from "@material-ui/core";
@@ -31,6 +31,20 @@ function Room(props) {
       });
   }
 
+  function leaveRoomClicked() {
+    axios
+      .post(
+        "http://localhost:8000/api/leave-room",
+        { user: "kiran" },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        console.log(res);
+        history.push("/home");
+      })
+      .catch((error) => console.log(error));
+  }
+
   return (
     <>
       <Grid container align="center">
@@ -50,6 +64,15 @@ function Room(props) {
               <Typography variant="h4" color="initial">
                 code : {params.roomCode}
               </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={leaveRoomClicked}
+              >
+                Leave Room
+              </Button>
             </Grid>
           </>
         ) : (

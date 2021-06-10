@@ -14,11 +14,15 @@ def unique_room_code():
     return code
 
 
+class UserValues(models.Model):
+    username = models.CharField(max_length=60, unique=True)
+
 
 class Room(models.Model):
     code = models.CharField(max_length=8, default=unique_room_code, unique=True)
     host = models.CharField(max_length=50, unique=True)
     votes_to_skip = models.IntegerField(null=False, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+    users_in_room = models.TextField(null=True)
+
 

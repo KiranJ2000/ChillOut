@@ -1,25 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect, Route } from "react-router-dom";
 import axios from "axios";
+
+import ComponentWillMountFunction from "./ComponentWillMountFunction";
 
 import { CircularProgress, Grid, Typography, Button } from "@material-ui/core";
 
-import EnterRoom from "./EnterRoom";
-import CreateRoom from "./CreateRoom";
-
-function Home() {
+function Home(props) {
   const [username, setUsername] = useState("");
+  const [roomCode, setRoomCode] = useState("");
+
   const history = useHistory();
 
-  useEffect(() => {
+  ComponentWillMountFunction(() => {
+    console.log("PODS PATTI");
     fetchUsername();
-  }, []);
+  });
+
+  // useEffect(() => {
+  //   fetchUsername();
+  // }, []);
 
   function fetchUsername() {
     axios
-      .get("http://localhost:8000/api/get-username", { withCredentials: true })
-      .then(({ data: { currentUsername } }) => {
-        //console.log(res);
+      .get("http://localhost:8000/api/get-username-roomcode", {
+        withCredentials: true,
+      })
+      .then(({ data: { currentUsername, roomCode } }) => {
+        console.log(currentUsername, roomCode);
+        setRoomCode(roomCode);
         setUsername(currentUsername);
       })
       .catch((err) => {
@@ -34,7 +43,7 @@ function Home() {
         <Grid container alignItems="center">
           <Grid item xs={12} align="center">
             <Typography variant="h3" color="initial">
-              Welcome {username ? username : <CircularProgress />}
+              Welcome {username}
             </Typography>
             <Typography variant="h5" color="textSecondary">
               Ready to listen to some music?
@@ -75,17 +84,28 @@ function Home() {
     );
   }
 
-  return (
-    <>
-      {username ? (
-        getMainContent()
-      ) : (
+  function isUsernameAndRoomCode() {
+    if (username) {
+      if (roomCode) {
+        return <Redirect to={`/room/${roomCode}`} />;
+      } else {
+        return getMainContent();
+      }
+    } else {
+      return (
         <Grid container align="center">
           <Grid item xs={12}>
             <CircularProgress style={{ marginTop: "50vh" }} />
           </Grid>
         </Grid>
-      )}
+      );
+    }
+  }
+
+  return (
+    <>
+      {console.log("NINDAPPAN")}
+      {isUsernameAndRoomCode()}
     </>
   );
 }

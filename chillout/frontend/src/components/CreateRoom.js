@@ -37,7 +37,7 @@ function CreateRoom() {
         console.log(res);
         history.push("/room/" + res.data.code);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => history.push("/home"));
   }
 
   return (

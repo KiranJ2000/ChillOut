@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Grid, Button, Typography, TextField } from "@material-ui/core";
 
 import { useHistory } from "react-router-dom";
@@ -14,6 +14,22 @@ function Enter() {
 
   const classes = useStyles();
   const history = useHistory();
+
+  useEffect(() => {
+    isUsernameAlreadyApplied();
+  }, []);
+
+  function isUsernameAlreadyApplied() {
+    axios
+      .get("http://localhost:8000/api/username-available", {
+        withCredentials: true,
+      })
+      .then((res) => {
+        console.log(res);
+        history.push("/home");
+      })
+      .catch((err) => null);
+  }
 
   function onSubmitButton() {
     if (!username || !username.trim()) {
@@ -41,7 +57,10 @@ function Enter() {
         console.log(res);
         history.push("/home");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        setError(true);
+        setErrorText("Username already taken!");
+      });
   }
 
   return (
