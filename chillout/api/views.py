@@ -177,3 +177,23 @@ class LeaveRoom(APIView):
 
             return Response({'Deletion successfull':'Success'}, status=status.HTTP_200_OK)
         return Response({'NO code found':'Not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class UsersInRoom(APIView):
+    def post(self, request, format=None):
+        code = request.data.get("code")
+
+        room = Room.objects.filter(code=code)
+
+        if len(room) > 0:
+            room = room[0]
+            users_in_room = room.users_in_room
+            users_in_room = ast.literal_eval(users_in_room)
+
+            users_in_room = list(users_in_room)
+
+            return JsonResponse({'users' : users_in_room}, status=status.HTTP_200_OK)
+
+        return Response({'Bad request': 'code parameter not found'}, status=status.HTTP_400_BAD_REQUEST)
+
+
