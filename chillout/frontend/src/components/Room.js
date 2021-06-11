@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
-import axios from "axios";
 
 import { Grid, Typography, Button, CircularProgress } from "@material-ui/core";
+
+import axios from "axios";
+
+import UsersInRoom from "./UsersInRoom";
 
 function Room(props) {
   const [votesToSkip, setVotesToSkip] = useState(0);
@@ -73,6 +76,9 @@ function Room(props) {
               >
                 Leave Room
               </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <UsersInRoom roomCode={params.roomCode} />
             </Grid>
           </>
         ) : (
