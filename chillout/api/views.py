@@ -51,8 +51,14 @@ class GetUsernameAndRoomCode(APIView):
    
 
         username = self.request.session.get('username')
-        room_code = self.request.session.get('room_code')
+        room_code = None
+        if 'room_code' in self.request.session:
+            room_code = self.request.session['room_code']
+            room = Room.objects.filter(code=room_code)
 
+            if len(room) == 0:
+                room_code = None
+                
         if username != None:
             return JsonResponse({'currentUsername':username, 'roomCode':room_code}, status=status.HTTP_200_OK)
 
@@ -170,10 +176,10 @@ class LeaveRoom(APIView):
                 room.save(update_fields=['users_in_room'])
                 self.request.session.pop('room_code')
             
-                # If the person who left the room is the host, delete the room
-            # if len(room) > 0:
-            #     room = room[0]
-            #     room.delete()
+            query_set = Room.objects.filter(host=self.request.session.session_key)
+            if len(query_set) > 0:
+                room = query_set[0]
+                room.delete()
 
             return Response({'Deletion successfull':'Success'}, status=status.HTTP_200_OK)
         return Response({'NO code found':'Not found'}, status=status.HTTP_404_NOT_FOUND)

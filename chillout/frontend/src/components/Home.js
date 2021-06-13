@@ -1,25 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, Redirect, Route } from "react-router-dom";
+import { useHistory, useLocation, Redirect, Route } from "react-router-dom";
+import { CircularProgress, Grid, Typography, Button } from "@material-ui/core";
 import axios from "axios";
 
 import ComponentWillMountFunction from "./ComponentWillMountFunction";
-
-import { CircularProgress, Grid, Typography, Button } from "@material-ui/core";
+import useStyles from "../styles/styles.js";
 
 function Home(props) {
   const [username, setUsername] = useState("");
   const [roomCode, setRoomCode] = useState("");
 
   const history = useHistory();
+  const classes = useStyles();
 
   ComponentWillMountFunction(() => {
     console.log("PODS PATTI");
     fetchUsername();
   });
-
-  // useEffect(() => {
-  //   fetchUsername();
-  // }, []);
 
   function fetchUsername() {
     axios
@@ -102,12 +99,7 @@ function Home(props) {
     }
   }
 
-  return (
-    <>
-      {console.log("NINDAPPAN")}
-      {isUsernameAndRoomCode()}
-    </>
-  );
+  return <>{isUsernameAndRoomCode()}</>;
 }
 
 export default Home;
