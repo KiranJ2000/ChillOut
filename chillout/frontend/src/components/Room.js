@@ -77,7 +77,7 @@ function Room(props) {
                 Leave Room
               </Button>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} align="right">
               <UsersInRoom roomCode={params.roomCode} />
             </Grid>
           </>
